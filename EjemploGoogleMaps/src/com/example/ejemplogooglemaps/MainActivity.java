@@ -21,7 +21,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.maps.model.VisibleRegion;
-
+//comment
 public class MainActivity extends FragmentActivity implements OnMapClickListener, 
 																		OnMarkerClickListener { 
 	
