@@ -4,6 +4,7 @@ package com.example.ejemplogooglemaps;
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Vibrator;
@@ -24,12 +25,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.maps.model.VisibleRegion;
-
-import com.example.ejemplogooglemaps.R;
-//import android.R;
-//import android.app.Activity;
-//import android.view.View;
-//comment
 
 public class MainActivity extends FragmentActivity implements OnMapClickListener, 
 											OnMarkerClickListener, OnCameraChangeListener { 
@@ -65,8 +60,12 @@ public class MainActivity extends FragmentActivity implements OnMapClickListener
         						bRCorner, tRCorner)
         						.strokeColor(Color.TRANSPARENT));
         */
-        sicomMap.setMyLocationEnabled(true);                                
-        sicomMap.getUiSettings().setZoomControlsEnabled(false);
+        sicomMap.setMyLocationEnabled(true);
+        //Asigna el control de Zoom si la pantalla no es multitouch
+        sicomMap.getUiSettings().setZoomControlsEnabled(
+			//Verificar si no soporta multiple touch
+    		!getPackageManager().hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN_MULTITOUCH)
+    	);
         sicomMap.getUiSettings().setCompassEnabled(true);
         addMainMarkers();   //pre-defined markers
         sicomMap.setOnMapClickListener(this);   
