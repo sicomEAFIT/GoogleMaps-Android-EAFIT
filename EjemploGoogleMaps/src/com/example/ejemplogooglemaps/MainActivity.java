@@ -4,7 +4,8 @@ package com.example.ejemplogooglemaps;
 import java.util.ArrayList;
 
 import android.content.Context;
-import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.v4.app.FragmentActivity;
@@ -12,7 +13,6 @@ import android.view.Menu;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener;
-import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -24,31 +24,27 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
-import com.example.ejemplogooglemaps.R;
-
+import com.google.android.gms.maps.model.VisibleRegion;
 
 public class MainActivity extends FragmentActivity implements OnMapClickListener, 
-						OnMarkerClickListener, OnCameraChangeListener, OnInfoWindowClickListener{ 
+											OnMarkerClickListener, OnCameraChangeListener { 
 	
 	private GoogleMap sicomMap;
-	private int minZoom = 17;
-	
-	private final LatLng UniEafit = new LatLng(6.200696,-75.578433);  
+	private final LatLng UniEafit = new LatLng(6.200635,-75.578433);  
 											//lat y long found in GoogleMaps
-	private final LatLng Biblioteca = new LatLng(6.201203,-75.57843);  
-	private final LatLng Rectoria = new LatLng(6.199531,-75.578905);  
-	private final LatLng Fundadores = new LatLng(6.200448,-75.578951);
-	private final LatLng BloIngenierias = new LatLng(6.198059,-75.579581);  
-	 
+	private int minZoom = 17;
+	private final LatLng Biblioteca = new LatLng(6.201176,-75.578438);  
+	private final LatLng Rectoria = new LatLng(6.199432,-75.578919);  
+	private final LatLng Fundadores = new LatLng(6.197963,-75.579557);  
+	private final LatLng BloIngenierias = new LatLng(6.200395,-75.578951); 
+	
 	//eafit area                               //y          x
 	private final LatLng tLCorner = new LatLng(6.203500,-75.580197); 
 	private final LatLng bLCorner = new LatLng(6.196832,-75.580197);    
 	private final LatLng bRCorner = new LatLng(6.196832,-75.577057);
 	private final LatLng tRCorner = new LatLng(6.203500,-75.577057);
 	private final LatLngBounds sicomMapBounds = new LatLngBounds(bLCorner, tRCorner);
-	
-	private ArrayList<Marker> fixedMarkersList = new ArrayList<Marker>(); 
-	private ArrayList<Boolean> infoWindowsStatus = new ArrayList<Boolean>(); 
+	private ArrayList<String> mainMarkersList = new ArrayList<String>(); 
 	
 	
     @Override
@@ -64,79 +60,84 @@ public class MainActivity extends FragmentActivity implements OnMapClickListener
         						bRCorner, tRCorner)
         						.strokeColor(Color.TRANSPARENT));
         */
-        sicomMap.setMyLocationEnabled(true);                                
-        sicomMap.getUiSettings().setZoomControlsEnabled(false);
+        sicomMap.setMyLocationEnabled(true);
+        //Asigna el control de Zoom si la pantalla no es multitouch
+        sicomMap.getUiSettings().setZoomControlsEnabled(
+			//Verificar si no soporta multiple touch
+    		!getPackageManager().hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN_MULTITOUCH)
+    	);
         sicomMap.getUiSettings().setCompassEnabled(true);
         addMainMarkers();   //pre-defined markers
         sicomMap.setOnMapClickListener(this);   
         sicomMap.setOnMarkerClickListener(this);
         sicomMap.setOnCameraChangeListener(this);
-        sicomMap.setOnInfoWindowClickListener(this);
     }
     
   
     public void addMainMarkers(){
+    	Marker mkUniEafit = sicomMap.addMarker(new MarkerOptions()
+        .position(UniEafit)
+        .title(getString(R.string.UEaf))  //title of the marker
+        .snippet(getString(R.string.UEafAbi))  //popUp when pressing it
+        .icon(BitmapDescriptorFactory
+               .defaultMarker(BitmapDescriptorFactory.HUE_YELLOW))
+        .anchor(0.5f, 0.5f));  //point within the marker that correspond to the
+    								//exact position we want to show
+    	listMainMarkers(mkUniEafit.getId());
     	
     	Marker mkBiblioteca = sicomMap.addMarker(new MarkerOptions()
         .position(Biblioteca)
         .title(getString(R.string.Bibl))  //getString converts that int to String
         .snippet(getString(R.string.BiblLEV)) 
-        .icon(BitmapDescriptorFactory.fromResource(R.drawable.fixed_marker))
+        .icon(BitmapDescriptorFactory
+               .defaultMarker(BitmapDescriptorFactory.HUE_YELLOW))
         .anchor(0.5f, 0.5f));  
-    	listMainMarkers(mkBiblioteca);
+    	listMainMarkers(mkBiblioteca.getId());
     	
     	Marker mkRectoria = sicomMap.addMarker(new MarkerOptions()
         .position(Rectoria)
         .title(getString(R.string.Rect))  
         .snippet(getString(R.string.RectoBloque))
-        .icon(BitmapDescriptorFactory.fromResource(R.drawable.fixed_marker))
+        .icon(BitmapDescriptorFactory
+               .defaultMarker(BitmapDescriptorFactory.HUE_YELLOW))
         .anchor(0.5f, 0.5f));
-    	listMainMarkers(mkRectoria);
+    	listMainMarkers(mkRectoria.getId());
     	
     	Marker mkFundadores = sicomMap.addMarker(new MarkerOptions()
         .position(Fundadores)
         .title(getString(R.string.Fund))  
         .snippet(getString(R.string.AudFundad))
-        .icon(BitmapDescriptorFactory.fromResource(R.drawable.fixed_marker))
+        .icon(BitmapDescriptorFactory
+               .defaultMarker(BitmapDescriptorFactory.HUE_YELLOW))
         .anchor(0.5f, 0.5f));
-    	listMainMarkers(mkFundadores);
+    	listMainMarkers(mkFundadores.getId());
     	
     	Marker mkBloIngenierias = sicomMap.addMarker(new MarkerOptions()
         .position(BloIngenierias)
         .title(getString(R.string.Ing))  
         .snippet(getString(R.string.BloqueInge))
-        .icon(BitmapDescriptorFactory.fromResource(R.drawable.fixed_marker))
+        .icon(BitmapDescriptorFactory
+               .defaultMarker(BitmapDescriptorFactory.HUE_YELLOW))
         .anchor(0.5f, 0.5f));
-    	listMainMarkers(mkBloIngenierias);
+    	listMainMarkers(mkBloIngenierias.getId());
     }                           
     
     
     @Override
-    public void onMapClick(LatLng pressedPoint){
+    public void onMapClick(LatLng pressedPoint) {
     	if(sicomMapBounds.contains(new LatLng(pressedPoint.latitude, pressedPoint.longitude))){
 	    	sicomMap.addMarker(new MarkerOptions().position(pressedPoint).
 	           icon(BitmapDescriptorFactory
-	              .fromResource(R.drawable.user_marker))
-	              .anchor(0.5f, 0.5f));
+	              .fromResource(R.drawable.icon)));
     	}
     }
     
     @Override
     public boolean onMarkerClick(final Marker delMarker){
     	boolean isFixedMarker = false;
-    	for(int i=0; i<fixedMarkersList.size() && !isFixedMarker; i++){
-	    	if(delMarker.getId().equals(fixedMarkersList.get(i).getId())){ //a fixed marker was pressed
-	    		if(infoWindowsStatus.get(i)){ //this markerInfoWindow is open 
-	    			delMarker.hideInfoWindow();
-	    			infoWindowsStatus.set(i, false); //closing the infoWindow and setting its status 
-	    		}else{                                                                    //to false
-	    			for(int j=0; j<fixedMarkersList.size(); j++){ //to hide every infoWindow
-	    				fixedMarkersList.get(j).hideInfoWindow();
-	    				infoWindowsStatus.set(j, false); //setting every infoWindowStatus to false
-	    			}
-	    			delMarker.showInfoWindow(); 
-	    			infoWindowsStatus.set(i, true); //this markerInfoWindow is open now
-	    		}
+    	for(int i=0; i<mainMarkersList.size() && !isFixedMarker; i++){
+	    	if(delMarker.getId().equals(mainMarkersList.get(i))){
+	    	   	delMarker.showInfoWindow();
 	    		isFixedMarker = true;
 	    	}
     	}
@@ -147,14 +148,13 @@ public class MainActivity extends FragmentActivity implements OnMapClickListener
     }
     
     
-    public void listMainMarkers(Marker fixedMarker){
-    	fixedMarkersList.add(fixedMarker);
-    	infoWindowsStatus.add(false); //no infoWindow is open
+    public void listMainMarkers(String fixedMarker){
+    	mainMarkersList.add(fixedMarker);
     }
     
     
     @Override
-    public void onCameraChange(CameraPosition position) {
+    public void onCameraChange(CameraPosition position){
     	Vibrator outOfBoundsVb = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
     	if(!sicomMapBounds.contains(new LatLng(position.target.latitude, 
     			position.target.longitude)) || position.zoom < minZoom){
@@ -166,19 +166,6 @@ public class MainActivity extends FragmentActivity implements OnMapClickListener
     	
     }
    
-    @Override
-	public void onInfoWindowClick(Marker marker){
-    	String windowTitle = "";
-    	Intent openBuildingInfo = new Intent(MainActivity.this, BuildingInfo.class); //establishes the 
-    	 														//connection from this activity to the
-    	   														//indicated one
-    	Bundle paramsBag = new Bundle();       //creates a bag for the parameters                        
-		windowTitle = marker.getTitle();                              
-		paramsBag.putString("windowTitle", windowTitle);  //puts a parameter in the bag
-		openBuildingInfo.putExtras(paramsBag);   //puts the bag in the opening Activity
-        startActivity(openBuildingInfo); 
-	}
-    
     
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -187,12 +174,4 @@ public class MainActivity extends FragmentActivity implements OnMapClickListener
         return true;
     }
     
-    /*
-     * Referencias:
-     * 
-     * La imagen de user_marker fue extraida de: http://www.iconarchive.com/show/
-     * vista-map-markers-icons-by-icons-land/Map-Marker-Push-Pin-1-Left-Azure-icon.html
-     * La imagen de fixed_marker fue extraida de: http://www.clker.com/clipart-12249.html
-     * 
-     */
 }
