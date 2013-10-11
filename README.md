@@ -1,2 +1,2 @@
-GoogleMapsv2Example
-===================
+GoogleMaps-Android-EAFIT
+========================
