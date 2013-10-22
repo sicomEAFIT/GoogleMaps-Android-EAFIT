@@ -8,13 +8,20 @@ import android.view.Menu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+/* This Class shows the information related to a specific building inside the University.
+ * It is in charge of setting the appropriate building view and all its attributes and
+ * presenting the correct information about any pressed main marker.
+ */
 public class BuildingInfo extends Activity {
 	
 	private String windowTitle = "";
 	private RelativeLayout buildingView;
 	private TextView buildingTitle;
 	
-
+	/*	
+	* Main method of the application, the windowTitle attribute is set to the contents of the received 
+	* parameter, to assign to the content view, then it initializes the visual attributes of the next view.
+	*/
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -24,7 +31,13 @@ public class BuildingInfo extends Activity {
 		initializeViewAttr(); 
 	}
 	
-	public void selectContentView(String windowTitle) {
+	 /*
+	 * @windowTitle: title of the marker chosen.
+	 * 
+	 * Depending of the parameter (windowTitle), it initialize the corresponding view,
+	 * and to the global attribute buildingView, it sets the corresponding layout to the view.
+	 */
+	 public void selectContentView(String windowTitle) {
 		if(windowTitle.equals(getString(R.string.Bibl))){
 			setContentView(R.layout.activity_biblioteca);
 			buildingView = (RelativeLayout) findViewById(R.id.biblioteca);
@@ -43,6 +56,9 @@ public class BuildingInfo extends Activity {
 		}
 	}
 	
+    /*
+    * This method initializes the visual attributes of the view. 
+	*/
 	public void initializeViewAttr(){
 		buildingTitle = (TextView) buildingView.getChildAt(0);
 		buildingTitle.setText(windowTitle);
