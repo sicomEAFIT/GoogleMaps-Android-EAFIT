@@ -13,6 +13,7 @@
         android:protectionLevel="signature" />
 
     <uses-permission android:name="com.example.ejemplogooglemaps.permission.MAPS_RECEIVE" />
+    
 
     <uses-feature
         android:glEsVersion="0x00020000"
@@ -24,6 +25,8 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    
 
     <application
         android:allowBackup="true"
@@ -42,7 +45,7 @@
 
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyAP0kbHg5pLTnR4v1wtkjaNs_1eIgsA4eA" />
+            android:value="AIzaSyBx_CoCNGGo5OZ3GfEyBUvAY5Yl5FpknVQ" />
 
         <activity
             android:name="com.example.ejemplogooglemaps.BuildingInfo"
@@ -64,6 +67,10 @@
             android:name="com.example.ejemplogooglemaps.Rectoria"
             android:label="@string/title_activity_rectoria" >
         </activity>
+        
+        <meta-data
+        android:name="com.google.android.gms.version"
+        android:value="@integer/google_play_services_version" />
     </application>
 
 </manifest>
